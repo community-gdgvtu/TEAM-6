@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Console — RescueBite</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('rescuebite_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+</head>
+<body data-page="admin">
+
+  <!-- Top Header Navigation -->
+  <header class="top-header">
+    <div class="header-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <div>RescueBite</div>
+      </a>
+
+      <div class="header-actions">
+        <nav class="nav-tabs">
+          <a href="/" class="nav-tab">Home</a>
+          <a href="/marketplace.html" class="nav-tab">Marketplace</a>
+          <a href="/admin.html" class="nav-tab active" id="nav-admin">Admin Console</a>
+        </nav>
+
+        <button class="theme-toggle-btn" id="theme-toggle" onclick="app.toggleTheme()" title="Toggle Theme">🌙 Dark</button>
+        <div id="user-nav-box" style="display: flex; gap: 0.5rem; align-items: center;"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <div style="margin-bottom: 1.5rem;">
+      <h2>Platform Administration Console</h2>
+      <p class="section-subtitle">Review partner/NGO applications, monitor platform impact, and manage system access.</p>
+    </div>
+
+    <!-- Pending Partners -->
+    <div class="section-card">
+      <div class="section-header">
+        <h3>Pending Donor Partner Verification Profiles</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Business Name</th>
+              <th>Type</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>License / Tax ID</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-partners-tbody">
+            <tr><td colspan="6" style="text-align: center;">Loading pending partners...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pending NGOs -->
+    <div class="section-card">
+      <div class="section-header">
+        <h3>Pending NGO Verification Profiles</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Organization Name</th>
+              <th>Reg No.</th>
+              <th>Contact</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-ngos-tbody">
+            <tr><td colspan="6" style="text-align: center;">Loading pending NGOs...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users Management -->
+    <div class="section-card">
+      <div class="section-header">
+        <h3>User Accounts & Status</h3>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Account Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-users-tbody">
+            <tr><td colspan="5" style="text-align: center;">Loading platform users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- DEDICATED REJECTION REASON MODAL -->
+  <div class="modal-overlay" id="reject-modal">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 id="reject-modal-title">Reject Application</h3>
+        <button class="modal-close" onclick="app.closeModal('reject-modal')">✕</button>
+      </div>
+      <form onsubmit="app.handleRejectSubmit(event)">
+        <p class="modal-detail-desc" style="font-size: 0.9rem; margin-bottom: 1rem;" id="reject-modal-desc">
+          Please enter the specific reason for rejecting this verification profile. This feedback will be sent to the applicant.
+        </p>
+        <div class="form-group">
+          <label class="form-label" style="font-weight: 600;">Rejection Reason <span style="color: var(--danger-600);">*</span></label>
+          <textarea class="form-control" id="reject-reason-input" rows="4" required placeholder="e.g. Invalid business tax identification number or incomplete registration documentation."></textarea>
+        </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.25rem;">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('reject-modal')">Cancel</button>
+          <button type="submit" class="btn btn-danger">Submit Rejection</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.9rem;">🌱</div>
+        <strong>RescueBite</strong>
+      </div>
+      <div class="footer-copy">&copy; 2026 RescueBite. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

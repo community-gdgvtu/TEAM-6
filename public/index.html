@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RescueBite — Community Surplus Food Exchange</title>
+  <meta name="description" content="Connecting restaurants and donors with verified NGOs to rescue surplus food and feed communities in need.">
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('rescuebite_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+</head>
+<body data-page="home">
+
+  <!-- Top Header Navigation -->
+  <header class="top-header">
+    <div class="header-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <div>RescueBite</div>
+      </a>
+
+      <!-- Main Nav & Auth Controls -->
+      <div class="header-actions">
+        <nav class="nav-tabs">
+          <a href="/" class="nav-tab active">Home</a>
+          <a href="/marketplace.html" class="nav-tab">Marketplace</a>
+          <a href="/donor.html" class="nav-tab" id="nav-donor" style="display: none;">Donor Portal</a>
+          <a href="/ngo.html" class="nav-tab" id="nav-ngo" style="display: none;">NGO Portal</a>
+          <a href="/admin.html" class="nav-tab" id="nav-admin" style="display: none;">Admin Console</a>
+        </nav>
+
+        <button class="theme-toggle-btn" id="theme-toggle" onclick="app.toggleTheme()" title="Toggle Theme">🌙 Dark</button>
+
+        <div id="user-nav-box" style="display: flex; gap: 0.5rem; align-items: center;">
+          <a href="/login.html" class="btn btn-secondary">Log In</a>
+          <a href="/register.html" class="btn btn-primary">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    <section id="view-home">
+      <!-- Hero Section -->
+      <div class="hero-card">
+        <div class="hero-content">
+          <span class="hero-badge">🌱 ZERO FOOD WASTE PLATFORM</span>
+          <h1 class="hero-title">Turn Surplus Food into Community Impact.</h1>
+          <p class="hero-subtitle">RescueBite connects restaurants, hotels, caterers, and grocery stores with verified non-profits to rescue fresh surplus food and deliver meals to families in need.</p>
+          
+          <div class="hero-actions">
+            <a href="/marketplace.html" class="btn btn-primary btn-lg">Explore Marketplace →</a>
+            <a href="/register.html" class="btn btn-secondary btn-lg">Get Started / Register</a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-value" id="stat-active-count">7+</span>
+              <span class="stat-label">Active Listings</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value" id="stat-rescued-count">100+</span>
+              <span class="stat-label">Rescued Outcomes</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">100%</span>
+              <span class="stat-label">Verified Partners</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works Section -->
+      <div class="landing-section">
+        <div class="section-title-wrap">
+          <h2 class="landing-section-title">How RescueBite Works</h2>
+          <p class="landing-section-sub">A simple, secure 3-step pipeline to redirect edible food from landfill to families.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-icon">🍲</div>
+            <div class="step-number">STEP 1</div>
+            <h3 class="step-title">List Surplus Food</h3>
+            <p class="step-desc">Restaurants & caterers post surplus prepared meals, bakery items, or produce with photos, quantity, and pickup times.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-icon">🤝</div>
+            <div class="step-number">STEP 2</div>
+            <h3 class="step-title">Verified NGO Reserves</h3>
+            <p class="step-desc">Vetted non-profit organizations browse nearby available listings and reserve items for distribution with 1 click.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-icon">🌱</div>
+            <div class="step-number">STEP 3</div>
+            <h3 class="step-title">Pickup & Impact Recorded</h3>
+            <p class="step-desc">NGOs collect the food, meals reach families in need, and verified impact analytics are logged on the platform.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Feature Pillars -->
+      <div class="features-grid-section">
+        <div class="feature-pillar">
+          <div class="pillar-icon">⚡</div>
+          <h4>Real-Time Surplus Exchange</h4>
+          <p>Instant listing and atomic reservations ensure food is picked up while fresh and safe for consumption.</p>
+        </div>
+        <div class="feature-pillar">
+          <div class="pillar-icon">🛡️</div>
+          <h4>Vetted & Verified Network</h4>
+          <p>Every donor business and recipient NGO undergoes administrative verification to maintain quality and trust.</p>
+        </div>
+        <div class="feature-pillar">
+          <div class="pillar-icon">📊</div>
+          <h4>Traceable Community Impact</h4>
+          <p>Automated tracking of meals rescued, financial value saved, and environmental CO2 emissions prevented.</p>
+        </div>
+      </div>
+
+      <!-- Call To Action Section -->
+      <div class="cta-card">
+        <h2 class="cta-title">Ready to Reduce Food Waste in Your City?</h2>
+        <p class="cta-sub">Join businesses and non-profits taking real action against hunger and environmental waste.</p>
+        <div class="cta-buttons">
+          <a href="/marketplace.html" class="btn btn-primary btn-lg">Browse Marketplace</a>
+          <a href="/register.html" class="btn btn-secondary btn-lg">Register Organization</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.9rem;">🌱</div>
+        <strong>RescueBite</strong>
+      </div>
+      <p class="footer-text">Connecting local businesses and non-profits to rescue surplus food and feed communities.</p>
+      <div class="footer-copy">&copy; 2026 RescueBite. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

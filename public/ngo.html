@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Hub — RescueBite</title>
+  <meta name="description" content="Manage food rescue operations, active surplus reservations, and community impact.">
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('rescuebite_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+  <style>
+    /* NGO Portal Custom Premium Styling */
+    .ngo-hero-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .ngo-hero-card::after {
+      content: '🤝';
+      position: absolute;
+      right: 2rem;
+      bottom: -1rem;
+      font-size: 8rem;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+    .ngo-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    .ngo-subtitle {
+      color: var(--slate-300);
+      font-size: 0.95rem;
+      max-width: 600px;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .kpi-card {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--transition-fast);
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .kpi-val {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--primary-200);
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--slate-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.2rem;
+    }
+    .res-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .res-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--slate-200);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: all var(--transition-normal);
+    }
+    .res-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+  </style>
+</head>
+<body data-page="ngo">
+
+  <!-- Top Header Navigation -->
+  <header class="top-header">
+    <div class="header-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <div>RescueBite</div>
+      </a>
+
+      <div class="header-actions">
+        <nav class="nav-tabs">
+          <a href="/" class="nav-tab">Home</a>
+          <a href="/marketplace.html" class="nav-tab">Marketplace</a>
+          <a href="/ngo.html" class="nav-tab active" id="nav-ngo">NGO Portal</a>
+        </nav>
+
+        <button class="theme-toggle-btn" id="theme-toggle" onclick="app.toggleTheme()" title="Toggle Theme">🌙 Dark</button>
+        <div id="user-nav-box" style="display: flex; gap: 0.5rem; align-items: center;"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- Verification Alert Banner -->
+    <div id="ngo-verification-banner"></div>
+
+    <!-- NGO Hero Workspace Card with KPIs -->
+    <div class="ngo-hero-card">
+      <h1 class="ngo-title">NGO Food Rescue Hub</h1>
+      <p class="ngo-subtitle">Manage reserved surplus food items, organize pickup logistics, and track your organization's total community impact.</p>
+
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="/marketplace.html" class="btn btn-primary">+ Browse Surplus Marketplace</a>
+        <button class="btn btn-secondary" onclick="app.openModal('ngo-modal')" style="background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.25);">Edit NGO Verification Profile</button>
+      </div>
+
+      <!-- KPI Stat Grid -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-val" id="ngo-stat-active">0</span>
+          <span class="kpi-label">Active Reservations</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val" id="ngo-stat-meals">0</span>
+          <span class="kpi-label">Total Meals Rescued</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val" id="ngo-stat-value">$0</span>
+          <span class="kpi-label">Est. Financial Value Saved</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-val" id="ngo-stat-status" style="font-size: 1.1rem; color: #f59e0b;">Checking...</span>
+          <span class="kpi-label">Organization Status</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Reservations Section -->
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <h2>Active Food Reservations for Pickup</h2>
+          <p class="section-subtitle">Surplus food items currently reserved by your organization awaiting pickup.</p>
+        </div>
+        <a href="/marketplace.html" class="btn btn-secondary" style="font-size: 0.85rem;">Browse Marketplace →</a>
+      </div>
+
+      <!-- Visual Card Grid for Active Reservations -->
+      <div class="res-card-grid" id="ngo-reservations-grid">
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-icon">📦</div>
+          <h3 class="empty-title">Loading your active reservations...</h3>
+        </div>
+      </div>
+
+      <!-- Data Table View Backup -->
+      <div class="table-responsive" style="margin-top: 1rem;">
+        <h4 class="table-title">Reservations Log View</h4>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Quantity</th>
+              <th>Pickup Address</th>
+              <th>Expiry</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="ngo-reservations-tbody">
+            <tr>
+              <td colspan="6" class="table-empty-cell">No active reservations.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Received Impact History -->
+    <div class="section-card" style="margin-top: 2rem;">
+      <div class="section-header">
+        <div>
+          <h2>Received Impact & Distribution History</h2>
+          <p class="section-subtitle">Completed surplus food pickups delivered to families and community centers.</p>
+        </div>
+        <span class="badge badge-cat badge-verified-outcomes">Verified Outcomes</span>
+      </div>
+
+      <div class="table-responsive" style="margin-top: 0.5rem;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Item Description</th>
+              <th>Category</th>
+              <th>Quantity Rescued</th>
+              <th>Completion Date</th>
+              <th>Verified Impact Status</th>
+            </tr>
+          </thead>
+          <tbody id="ngo-impact-tbody">
+            <tr>
+              <td colspan="5" class="table-empty-cell" style="padding: 2rem;">No completed impact history yet. Complete pickups with donor partners to log outcomes.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- NGO REGISTRATION / EDIT MODAL -->
+  <div class="modal-overlay" id="ngo-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>NGO Verification Profile</h3>
+        <button class="modal-close" onclick="app.closeModal('ngo-modal')">✕</button>
+      </div>
+      <form onsubmit="app.handleNgoRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Organization Name</label>
+          <input type="text" class="form-control" id="ngo-name" required placeholder="e.g. City Harvest Alliance">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Registration Number</label>
+            <input type="text" class="form-control" id="ngo-reg" required placeholder="NGO-501C3-9928">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Person</label>
+            <input type="text" class="form-control" id="ngo-contact" required placeholder="Sarah Jenkins">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Contact Phone</label>
+            <input type="text" class="form-control" id="ngo-phone" required placeholder="+1 555-0144">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Office Address</label>
+            <input type="text" class="form-control" id="ngo-address" required placeholder="45 NGO Way, Central Dist">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Submit Profile for Verification</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DONATION DETAIL MODAL -->
+  <div class="modal-overlay" id="donation-detail-modal">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 id="detail-title">Donation Details</h3>
+        <button class="modal-close" onclick="app.closeModal('donation-detail-modal')">✕</button>
+      </div>
+      <div id="detail-content"></div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.9rem;">🌱</div>
+        <strong>RescueBite</strong>
+      </div>
+      <p class="footer-text">Connecting local businesses and non-profits to rescue surplus food and feed communities.</p>
+      <div class="footer-copy">&copy; 2026 RescueBite. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

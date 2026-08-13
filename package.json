@@ -1,0 +1,38 @@
+{
+  "name": "rescuebite-backend",
+  "version": "0.1.0",
+  "description": "RescueBite — surplus-food marketplace backend (Node.js + Express + MongoDB Atlas + Mongoose).",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "dev:all": "nodemon server.js",
+    "seed": "node scripts/seed.js",
+    "verify:phase4": "node scripts/verify-phase4.js",
+    "verify:phase5-6": "node scripts/verify-phase5-6.js",
+    "verify:phase7-8": "node scripts/verify-phase7-8.js",
+    "verify:e2e": "node scripts/verify-e2e.js",
+    "verify:phase9": "node scripts/verify-phase9.js",
+    "verify": "npm run verify:phase4 && npm run verify:phase5-6 && npm run verify:phase7-8 && npm run verify:phase9 && node scripts/verify-role-middleware.js && node scripts/verify-verification-middleware.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.24.3",
+    "morgan": "^1.10.0",
+    "multer": "^2.2.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

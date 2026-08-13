@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Workspace — RescueBite</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('rescuebite_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+</head>
+<body data-page="donor">
+
+  <!-- Top Header Navigation -->
+  <header class="top-header">
+    <div class="header-container">
+      <a href="/" class="brand-logo">
+        <div class="brand-icon">🌱</div>
+        <div>RescueBite</div>
+      </a>
+
+      <div class="header-actions">
+        <nav class="nav-tabs">
+          <a href="/" class="nav-tab">Home</a>
+          <a href="/marketplace.html" class="nav-tab">Marketplace</a>
+          <a href="/donor.html" class="nav-tab active" id="nav-donor">Donor Portal</a>
+        </nav>
+
+        <button class="theme-toggle-btn" id="theme-toggle" onclick="app.toggleTheme()" title="Toggle Light/Dark Theme">🌙 Dark</button>
+        <div id="user-nav-box" style="display: flex; gap: 0.5rem; align-items: center;"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <div id="donor-verification-banner"></div>
+
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <h2>Donor Workspace</h2>
+          <p class="section-subtitle">Manage your posted food surplus listings and complete NGO pick-ups.</p>
+        </div>
+        <button class="btn btn-primary" id="btn-create-donation" onclick="app.openCreateDonationModal()">+ List Surplus Food</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Qty</th>
+              <th>Status</th>
+              <th>Expiry</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="donor-donations-tbody">
+            <tr>
+              <td colspan="6" class="table-empty-cell" style="padding: 2rem;">Loading your listings...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- PARTNER REGISTRATION / EDIT MODAL -->
+  <div class="modal-overlay" id="partner-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="partner-modal-title">Partner Business Verification Profile</h3>
+        <button class="modal-close" onclick="app.closeModal('partner-modal')">✕</button>
+      </div>
+      <form onsubmit="app.handlePartnerRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Business Name <span style="color: var(--danger-600);">*</span></label>
+          <input type="text" class="form-control" id="p-name" required placeholder="e.g. Grand Plaza Bistro">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Business Category <span style="color: var(--danger-600);">*</span></label>
+            <select class="form-control" id="p-type" required>
+              <option value="restaurant">Restaurant</option>
+              <option value="hotel">Hotel / Resort</option>
+              <option value="catering">Caterer / Food Service</option>
+              <option value="event">Events & Hospitality</option>
+              <option value="other">Other Food Donor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Phone <span style="color: var(--danger-600);">*</span></label>
+            <input type="text" class="form-control" id="p-phone" required minlength="7" maxlength="20" placeholder="+1 555-0192">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business License / Tax ID <span style="color: var(--danger-600);">*</span></label>
+          <input type="text" class="form-control" id="p-license" required maxlength="80" placeholder="LIC-882910-FOOD">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business Address <span style="color: var(--danger-600);">*</span></label>
+          <input type="text" class="form-control" id="p-address" required maxlength="300" placeholder="123 Food Street, Suite 4">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 0.5rem;">Submit Verification Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CREATE DONATION MODAL -->
+  <div class="modal-overlay" id="create-donation-modal">
+    <div class="modal-card" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>List Surplus Food Item</h3>
+        <button class="modal-close" onclick="app.closeModal('create-donation-modal')">✕</button>
+      </div>
+      <form onsubmit="app.handleCreateDonation(event)">
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-control" id="d-title" required placeholder="e.g. Fresh Artisan Bread Rolls (50 pcs)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" id="d-desc" rows="2" placeholder="Describe the food, packaging, storage conditions..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-control" id="d-category" required>
+              <option value="prepared-meals">Prepared Meals</option>
+              <option value="bakery">Bakery</option>
+              <option value="produce">Produce</option>
+              <option value="dairy">Dairy</option>
+              <option value="packaged">Packaged</option>
+              <option value="beverages">Beverages</option>
+              <option value="frozen">Frozen</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" id="d-quantity" min="1" value="10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unit</label>
+            <input type="text" class="form-control" id="d-unit" value="portions" required placeholder="portions / kg / boxes">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Best Before / Expiry Time</label>
+            <input type="datetime-local" class="form-control" id="d-expiry" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated Value ($)</label>
+            <input type="number" class="form-control" id="d-val" min="0" step="0.5" value="45">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pickup Address</label>
+          <input type="text" class="form-control" id="d-address" required placeholder="e.g. 77 Baker Street, Downtown">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Longitude (Lng)</label>
+            <input type="number" step="any" class="form-control" id="d-lng" value="77.5946" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Latitude (Lat)</label>
+            <input type="number" step="any" class="form-control" id="d-lat" value="12.9716" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Food Photo Image Upload (Optional)</label>
+          <input type="file" class="form-control" id="d-image-file" accept="image/jpeg,image/png,image/webp">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 0.5rem;">Publish Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.9rem;">🌱</div>
+        <strong>RescueBite</strong>
+      </div>
+      <div class="footer-copy">&copy; 2026 RescueBite. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -6,8 +6,8 @@ Guidelines for contributing to this repository during **GDGoC Summer DevSprint 2
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/<org>/team-6.git
-   cd team-6
+   git clone https://github.com/community-gdgvtu/TEAM-6.git
+   cd TEAM-6
    ```
 2. Confirm you have push access under the `dev6` team. If not, ping a team lead or organizer.
 3. Set up the project locally per the instructions in `README.md`.
@@ -50,7 +50,7 @@ Use GitHub Issues to track tasks and bugs. Label by type (`feature`, `bug`, `doc
 
 - [ ] `main` branch builds/runs cleanly
 - [ ] `README.md` updated with setup + demo instructions
-- [ ] Team members and roles listed in `README.md`
+- [ ] Team members and roles listed in `README.md` and `CONTRIBUTORS.md`
 - [ ] Sponsor tech usage documented (if applicable)
 - [ ] Devpost/Devfolio submission links to this repository
 

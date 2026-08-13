@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Account — RescueBite</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('rescuebite_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
+</head>
+<body data-page="register">
+
+  <div class="auth-page-layout">
+    <div style="position: absolute; top: 1.5rem; right: 1.5rem;">
+      <button class="theme-toggle-btn" id="theme-toggle" onclick="app.toggleTheme()" title="Toggle Theme">🌙 Dark</button>
+    </div>
+
+    <div class="auth-box auth-box-lg">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <a href="/" class="brand-logo" style="justify-content: center; margin-bottom: 0.75rem;">
+          <div class="brand-icon">🌱</div>
+          <div>RescueBite</div>
+        </a>
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Create Your Account</h2>
+        <p style="font-size: 0.9rem;">Join businesses and NGOs reducing food waste.</p>
+      </div>
+
+      <form id="form-register" onsubmit="app.handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name / Business Entity</label>
+          <input type="text" class="form-control" id="reg-name" required placeholder="e.g. Fresh Bites Bakery / City Harvest">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="reg-email" required placeholder="name@domain.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="reg-password" required placeholder="At least 6 characters">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Role</label>
+          <select class="form-control" id="reg-role" required>
+            <option value="donor">Donor Partner (Restaurant, Hotel, Grocery, Caterer)</option>
+            <option value="ngo">NGO (Non-Profit Food Rescue Organization)</option>
+          </select>
+          <small class="auth-note">* Administrator accounts are provisioned internally by platform admins.</small>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="padding: 0.8rem; margin-top: 0.5rem;">Register Account</button>
+      </form>
+
+      <div class="auth-footer-text">
+        Already have an account? <a href="/login.html" style="font-weight: 700;">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
