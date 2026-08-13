@@ -1255,8 +1255,10 @@ a:hover {
 .app-footer {
   background: white;
   border-top: 1px solid var(--slate-200);
-  padding: 2.5rem 1.5rem;
-  margin-top: 3rem;
+  padding: 2.25rem 1.5rem;
+  margin-top: auto;
+  width: 100%;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
 }
 
 .footer-container {
@@ -1273,19 +1275,43 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--slate-900);
 }
 
+.footer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.footer-nav a {
+  color: var(--slate-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer-nav a:hover {
+  color: var(--primary-600);
+}
+
 .footer-text {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--slate-500);
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .footer-copy {
   font-size: 0.8rem;
   color: var(--slate-400);
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 /* Landing Page Hero Badge & Actions */
@@ -1751,6 +1777,22 @@ a:hover {
 
 [data-theme="dark"] .footer-brand {
   color: #f8fafc;
+}
+
+[data-theme="dark"] .footer-nav a {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .footer-nav a:hover {
+  color: var(--primary-400);
+}
+
+[data-theme="dark"] .footer-text {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .footer-copy {
+  color: #64748b;
 }
 
 [data-theme="dark"] .cat-pill {
