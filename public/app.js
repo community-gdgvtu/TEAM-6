@@ -30,60 +30,33 @@ const app = {
     const title = (item && item.title ? item.title.toLowerCase() : '');
     const cat = (item && item.category ? item.category.toLowerCase() : '');
 
-    // Title Keyword Matches to distinct high-res food images
-    if (title.includes('biryani') || title.includes('pulao') || title.includes('rice')) {
-      return 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80';
+    // Local Generated & Vector Image Matches
+    if (title.includes('biryani') || title.includes('pulao') || title.includes('rice') || title.includes('paneer') || title.includes('curry') || title.includes('masala')) {
+      return '/images/paneer_biryani.png';
     }
-    if (title.includes('paneer') || title.includes('curry') || title.includes('masala')) {
-      return 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=600&q=80';
+    if (title.includes('sourdough') || title.includes('bread') || title.includes('croissant') || title.includes('bakery') || title.includes('pastry') || title.includes('danish') || title.includes('cake') || title.includes('muffin')) {
+      return '/images/bakery_croissants.png';
     }
-    if (title.includes('pizza')) {
-      return 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('burger')) {
-      return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('sandwich') || title.includes('wrap')) {
-      return 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('sourdough') || title.includes('bread') || title.includes('toast')) {
-      return 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('croissant') || title.includes('pastry') || title.includes('danish')) {
-      return 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('cake') || title.includes('muffin') || title.includes('dessert') || title.includes('sweet') || title.includes('chocolate')) {
-      return 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('fruit') || title.includes('apple') || title.includes('orange') || title.includes('berry') || title.includes('basket')) {
-      return 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('vegetable') || title.includes('salad') || title.includes('green')) {
-      return 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80';
+    if (title.includes('fruit') || title.includes('apple') || title.includes('orange') || title.includes('produce') || title.includes('berry') || title.includes('vegetable') || title.includes('salad')) {
+      return '/images/produce.svg';
     }
     if (title.includes('milk') || title.includes('cheese') || title.includes('butter') || title.includes('dairy')) {
-      return 'https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?auto=format&fit=crop&w=600&q=80';
+      return '/images/dairy.svg';
     }
     if (title.includes('juice') || title.includes('drink') || title.includes('beverage') || title.includes('coffee') || title.includes('tea')) {
-      return 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('pasta') || title.includes('spaghetti') || title.includes('noodle')) {
-      return 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80';
-    }
-    if (title.includes('soup')) {
-      return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80';
+      return '/images/beverages.svg';
     }
 
     // Category Fallbacks
     const categoryDefaults = {
-      'prepared-meals': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
-      bakery: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
-      produce: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80',
-      dairy: 'https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?auto=format&fit=crop&w=600&q=80',
-      packaged: 'https://images.unsplash.com/photo-1584473457406-6df42d825c81?auto=format&fit=crop&w=600&q=80',
-      beverages: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
-      frozen: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
-      other: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80',
+      'prepared-meals': '/images/paneer_biryani.png',
+      bakery: '/images/bakery_croissants.png',
+      produce: '/images/produce.svg',
+      dairy: '/images/dairy.svg',
+      beverages: '/images/beverages.svg',
+      packaged: '/images/produce.svg',
+      frozen: '/images/dairy.svg',
+      other: '/images/paneer_biryani.png',
     };
 
     return categoryDefaults[cat] || categoryDefaults.other;
