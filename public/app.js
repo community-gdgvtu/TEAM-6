@@ -13,6 +13,7 @@ const app = {
     ngoProfile: null,
     adminStats: null,
     marketplaceView: 'food', // 'food' or 'places'
+    selectedPlace: null,
   },
 
   formatDateOnly(dateString) {
@@ -300,6 +301,23 @@ const app = {
     this.loadMarketplace();
   },
 
+  filterByPlace(address) {
+    this.state.selectedPlace = address;
+    this.state.marketplaceView = 'food';
+    const btnFood = document.getElementById('btn-view-food');
+    const btnPlaces = document.getElementById('btn-view-places');
+    if (btnFood && btnPlaces) {
+      btnFood.className = 'btn btn-primary';
+      btnPlaces.className = 'btn btn-secondary';
+    }
+    this.loadMarketplace();
+  },
+
+  clearPlaceFilter() {
+    this.state.selectedPlace = null;
+    this.loadMarketplace();
+  },
+
   async loadMarketplace() {
     const grid = document.getElementById('donation-grid');
     if (!grid) return;
@@ -325,7 +343,11 @@ const app = {
       if (this.state.marketplaceView === 'places') {
         this.renderPlacesView(this.state.donations);
       } else {
-        this.renderMarketplaceCards(this.state.donations);
+        let displayItems = this.state.donations;
+        if (this.state.selectedPlace) {
+          displayItems = displayItems.filter((d) => d.pickupAddress === this.state.selectedPlace);
+        }
+        this.renderMarketplaceCards(displayItems);
       }
     } catch (err) {
       grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3 class="empty-title">Could not load donations</h3><p class="empty-desc">${err.message}</p></div>`;
@@ -360,11 +382,12 @@ const app = {
     });
 
     const places = Object.values(placeMap);
+    const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' style='background:%2310b981'><text x='50%' y='50%' font-size='40' fill='white' text-anchor='middle' dominant-baseline='central'>🏬 Partner Place</text></svg>";
 
     grid.innerHTML = places
       .map((place) => {
         const totalItems = place.items.length;
-        const sampleImg = place.items[0]?.imageUrl || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80';
+        const sampleImg = this.getItemImageUrl(place.items[0]);
         const foodListHtml = place.items
           .map(
             (i) => `
@@ -376,26 +399,28 @@ const app = {
           )
           .join('');
 
+        const safeAddr = this.escape(place.address).replace(/'/g, "\\'");
+
         return `
-        <div class="food-card" style="border: 1px solid rgba(16, 185, 129, 0.3);">
+        <div class="food-card" style="border: 1px solid rgba(16, 185, 129, 0.4);">
           <div class="card-img-wrap">
-            <img src="${sampleImg}" alt="${this.escape(place.address)}" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80'">
+            <img src="${sampleImg}" alt="${this.escape(place.address)}" class="card-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
             <div class="card-badge-top">
               <span class="badge badge-cat">🏬 Partner Place</span>
-              <span class="badge badge-status status-active">${totalItems} Surplus Offerings</span>
+              <span class="badge badge-status status-active">${totalItems} Listed Item${totalItems > 1 ? 's' : ''}</span>
             </div>
           </div>
           <div class="card-body">
             <h3 class="card-title">📍 ${this.escape(place.address)}</h3>
-            <p class="card-desc" style="font-size: 0.825rem; color: var(--primary-600); font-weight: 700; margin-bottom: 0.5rem;">Verified Surplus Food Location</p>
+            <p class="card-desc" style="font-size: 0.825rem; color: var(--primary-600); font-weight: 700; margin-bottom: 0.5rem;">Verified Surplus Food Donor Location</p>
             
             <div style="background: var(--bg-app); padding: 0.75rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
-              <div style="font-size: 0.775rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; color: var(--slate-500);">Available Food At This Location:</div>
+              <div style="font-size: 0.775rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; color: var(--slate-500);">Listed Food Items At This Location:</div>
               ${foodListHtml}
             </div>
 
             <div class="card-footer">
-              <button class="btn btn-primary btn-block" onclick="app.switchMarketplaceView('food')">Explore All Items At This Place</button>
+              <button class="btn btn-primary btn-block" onclick="app.filterByPlace('${safeAddr}')">View Only Food Listed By This Donor ➔</button>
             </div>
           </div>
         </div>
@@ -407,18 +432,34 @@ const app = {
   renderMarketplaceCards(items) {
     const grid = document.getElementById('donation-grid');
     if (!grid) return;
+
+    let bannerHtml = '';
+    if (this.state.selectedPlace) {
+      bannerHtml = `
+        <div style="grid-column: 1 / -1; background: var(--bg-card); border: 1px solid var(--primary-500); padding: 0.85rem 1.15rem; border-radius: var(--radius-md); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; box-shadow: var(--shadow-sm);">
+          <div>
+            <span style="font-weight: 700; color: var(--primary-600); font-size: 0.9rem;">📍 Donor Location Filter Active:</span>
+            <span style="font-weight: 600; color: var(--slate-800); margin-left: 0.25rem;">${this.escape(this.state.selectedPlace)}</span>
+          </div>
+          <button class="btn btn-secondary" onclick="app.clearPlaceFilter()" style="padding: 0.35rem 0.85rem; font-size: 0.8rem;">Clear Location Filter ✖️</button>
+        </div>
+      `;
+    }
+
     if (!items || !Array.isArray(items) || items.length === 0) {
-      grid.innerHTML = `
+      grid.innerHTML = bannerHtml + `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <div class="empty-icon">🌱</div>
           <h3 class="empty-title">No Surplus Food Listings Found</h3>
-          <p class="empty-desc">Check back shortly or try selecting a different category or search term.</p>
+          <p class="empty-desc">No active listings found for this search or donor place.</p>
         </div>
       `;
       return;
     }
 
-    grid.innerHTML = items
+    const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' style='background:%2310b981'><text x='50%' y='50%' font-size='40' fill='white' text-anchor='middle' dominant-baseline='central'>🍲 RescueBite Food</text></svg>";
+
+    grid.innerHTML = bannerHtml + items
       .map((item) => {
         const imgSrc = this.getItemImageUrl(item);
         const expiryFormatted = item.expiry ? this.formatDateOnly(item.expiry) : 'N/A';
@@ -432,7 +473,7 @@ const app = {
         return `
         <div class="food-card" onclick="app.openDetailModal('${item._id}')">
           <div class="card-img-wrap">
-            <img src="${imgSrc}" alt="${item.title}" class="card-img" onerror="this.src='${defaultImgs.other}'">
+            <img src="${imgSrc}" alt="${item.title}" class="card-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
             <div class="card-badge-top">
               <span class="badge badge-cat">${item.category}</span>
               <span class="badge badge-status status-${item.status}">${item.status}</span>
