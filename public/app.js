@@ -481,8 +481,10 @@ const app = {
     const expiry = document.getElementById('d-expiry').value;
     const estimatedValue = Number(document.getElementById('d-val').value);
     const pickupAddress = document.getElementById('d-address').value;
-    const lng = Number(document.getElementById('d-lng').value);
-    const lat = Number(document.getElementById('d-lat').value);
+    const lngEl = document.getElementById('d-lng');
+    const latEl = document.getElementById('d-lat');
+    const lng = lngEl ? Number(lngEl.value) : 77.5946;
+    const lat = latEl ? Number(latEl.value) : 12.9716;
     const imageFileInput = document.getElementById('d-image-file');
 
     const formData = new FormData();

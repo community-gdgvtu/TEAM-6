@@ -79,7 +79,7 @@ const donationSchema = new Schema(
       },
       coordinates: {
         type: [Number],
-        required: [true, 'coordinates are required'],
+        default: [77.5946, 12.9716],
         validate: {
           validator: (v) =>
             Array.isArray(v) &&

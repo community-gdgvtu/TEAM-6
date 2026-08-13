@@ -41,13 +41,16 @@ const DonationCreateSchema = z
       message: 'expiry must be in the future',
     }),
     pickupAddress: z.string().min(5).max(300),
-    location: z.object({
-      type: z.literal('Point').optional(),
-      coordinates: z.tuple([
-        z.coerce.number().min(-180).max(180), // lng
-        z.coerce.number().min(-90).max(90),   // lat
-      ]),
-    }),
+    location: z
+      .object({
+        type: z.literal('Point').optional(),
+        coordinates: z.tuple([
+          z.coerce.number().min(-180).max(180), // lng
+          z.coerce.number().min(-90).max(90),   // lat
+        ]),
+      })
+      .optional()
+      .default({ type: 'Point', coordinates: [77.5946, 12.9716] }),
     estimatedValue: z.coerce.number().min(0).optional(),
   })
   .strict(); // reject unknown fields
