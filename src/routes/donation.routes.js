@@ -41,6 +41,7 @@ const DonationCreateSchema = z
       message: 'expiry must be in the future',
     }),
     pickupAddress: z.string().min(5).max(300),
+    allergens: z.string().max(300).optional(),
     location: z
       .object({
         type: z.literal('Point').optional(),
@@ -66,6 +67,7 @@ const DonationUpdateSchema = z
       message: 'expiry must be in the future',
     }).optional(),
     pickupAddress: z.string().min(5).max(300).optional(),
+    allergens: z.string().max(300).optional(),
     location: z.object({
       type: z.literal('Point').optional(),
       coordinates: z.tuple([

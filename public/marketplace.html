@@ -48,8 +48,14 @@
     <div class="section-card marketplace-hero-card">
       <div style="max-width: 650px;">
         <span class="badge-live-discovery">LIVE DISCOVERY</span>
-        <h1 class="marketplace-hero-title">Surplus Food Marketplace</h1>
-        <p class="marketplace-hero-desc">Browse active, unexpired surplus food posted by verified partner restaurants, hotels, and bakeries near you.</p>
+        <h1 class="marketplace-hero-title">Surplus Food & Places Marketplace</h1>
+        <p class="marketplace-hero-desc">Discover active surplus food offerings and explore verified donor places, restaurants, and bakeries in your area.</p>
+        
+        <!-- Marketplace View Toggle (Food vs Places) -->
+        <div style="display: flex; gap: 0.5rem; margin-top: 1.25rem; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="btn-view-food" onclick="app.switchMarketplaceView('food')" style="padding: 0.5rem 1rem; font-size: 0.85rem;">🍲 Surplus Food Items</button>
+          <button class="btn btn-secondary" id="btn-view-places" onclick="app.switchMarketplaceView('places')" style="padding: 0.5rem 1rem; font-size: 0.85rem;">🏬 Food Donors & Places</button>
+        </div>
       </div>
     </div>
 

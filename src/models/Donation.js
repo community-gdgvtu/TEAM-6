@@ -71,6 +71,12 @@ const donationSchema = new Schema(
       minlength: [5, 'pickupAddress must be at least 5 characters'],
       maxlength: [300, 'pickupAddress must be at most 300 characters'],
     },
+    allergens: {
+      type: String,
+      default: 'None',
+      trim: true,
+      maxlength: [300, 'allergens must be at most 300 characters'],
+    },
     location: {
       type: {
         type: String,

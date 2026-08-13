@@ -12,6 +12,14 @@ const app = {
     partnerProfile: null,
     ngoProfile: null,
     adminStats: null,
+    marketplaceView: 'food', // 'food' or 'places'
+  },
+
+  formatDateOnly(dateString) {
+    if (!dateString) return 'N/A';
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return 'N/A';
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   },
 
   // Initialization
@@ -33,7 +41,7 @@ const app = {
     } else if (page === 'ngo') {
       await this.loadNgoPortal();
     } else if (page === 'admin') {
-      await this.loadAdminConsole();
+      await this.loadAdminPortal();
     }
   },
 
@@ -44,9 +52,7 @@ const app = {
       const year = tomorrow.getFullYear();
       const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
       const day = String(tomorrow.getDate()).padStart(2, '0');
-      const hours = String(tomorrow.getHours()).padStart(2, '0');
-      const minutes = String(tomorrow.getMinutes()).padStart(2, '0');
-      expiryInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+      expiryInput.value = `${year}-${month}-${day}`;
     }
   },
 
@@ -238,6 +244,22 @@ const app = {
   },
 
   // Marketplace Methods
+  switchMarketplaceView(view) {
+    this.state.marketplaceView = view;
+    const btnFood = document.getElementById('btn-view-food');
+    const btnPlaces = document.getElementById('btn-view-places');
+    if (btnFood && btnPlaces) {
+      if (view === 'food') {
+        btnFood.className = 'btn btn-primary';
+        btnPlaces.className = 'btn btn-secondary';
+      } else {
+        btnFood.className = 'btn btn-secondary';
+        btnPlaces.className = 'btn btn-primary';
+      }
+    }
+    this.loadMarketplace();
+  },
+
   async loadMarketplace() {
     const grid = document.getElementById('donation-grid');
     if (!grid) return;
@@ -260,10 +282,86 @@ const app = {
       const activeCount = document.getElementById('stat-active-count');
       if (activeCount) activeCount.textContent = this.state.donations.length;
 
-      this.renderMarketplaceCards(this.state.donations);
+      if (this.state.marketplaceView === 'places') {
+        this.renderPlacesView(this.state.donations);
+      } else {
+        this.renderMarketplaceCards(this.state.donations);
+      }
     } catch (err) {
       grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3 class="empty-title">Could not load donations</h3><p class="empty-desc">${err.message}</p></div>`;
     }
+  },
+
+  renderPlacesView(items) {
+    const grid = document.getElementById('donation-grid');
+    if (!grid) return;
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-icon">🏬</div>
+          <h3 class="empty-title">No Donor Places Found</h3>
+          <p class="empty-desc">No active donor places matching your criteria right now.</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Group items by pickupAddress (Place)
+    const placeMap = {};
+    items.forEach((item) => {
+      const addr = item.pickupAddress || 'Main Partner Establishment';
+      if (!placeMap[addr]) {
+        placeMap[addr] = {
+          address: addr,
+          items: [],
+        };
+      }
+      placeMap[addr].items.push(item);
+    });
+
+    const places = Object.values(placeMap);
+
+    grid.innerHTML = places
+      .map((place) => {
+        const totalItems = place.items.length;
+        const sampleImg = place.items[0]?.imageUrl || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80';
+        const foodListHtml = place.items
+          .map(
+            (i) => `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid var(--border-light); font-size: 0.825rem;">
+            <span><strong>${this.escape(i.title)}</strong> (${i.quantity} ${this.escape(i.unit)})</span>
+            <span class="badge badge-cat">${i.category}</span>
+          </div>
+        `,
+          )
+          .join('');
+
+        return `
+        <div class="food-card" style="border: 1px solid rgba(16, 185, 129, 0.3);">
+          <div class="card-img-wrap">
+            <img src="${sampleImg}" alt="${this.escape(place.address)}" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80'">
+            <div class="card-badge-top">
+              <span class="badge badge-cat">🏬 Partner Place</span>
+              <span class="badge badge-status status-active">${totalItems} Surplus Offerings</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">📍 ${this.escape(place.address)}</h3>
+            <p class="card-desc" style="font-size: 0.825rem; color: var(--primary-600); font-weight: 700; margin-bottom: 0.5rem;">Verified Surplus Food Location</p>
+            
+            <div style="background: var(--bg-app); padding: 0.75rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+              <div style="font-size: 0.775rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; color: var(--slate-500);">Available Food At This Location:</div>
+              ${foodListHtml}
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-primary btn-block" onclick="app.switchMarketplaceView('food')">Explore All Items At This Place</button>
+            </div>
+          </div>
+        </div>
+      `;
+      })
+      .join('');
   },
 
   renderMarketplaceCards(items) {
@@ -294,8 +392,13 @@ const app = {
         };
 
         const imgSrc = item.imageUrl || defaultImgs[item.category] || defaultImgs.other;
-        const expiryFormatted = item.expiry ? new Date(item.expiry).toLocaleString() : 'N/A';
+        const expiryFormatted = item.expiry ? this.formatDateOnly(item.expiry) : 'N/A';
         const isNgo = this.state.user && this.state.user.role === 'ngo';
+
+        const hasAllergens = item.allergens && item.allergens.toLowerCase() !== 'none';
+        const allergenBadge = hasAllergens
+          ? `<span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 0.2rem 0.55rem; border-radius: 6px; margin-top: 0.35rem;">⚠️ Allergens: ${this.escape(item.allergens)}</span>`
+          : `<span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 600; color: #16a34a; background: #dcfce7; padding: 0.2rem 0.55rem; border-radius: 6px; margin-top: 0.35rem;">🌿 Allergen-Free</span>`;
 
         return `
         <div class="food-card" onclick="app.openDetailModal('${item._id}')">
@@ -309,6 +412,7 @@ const app = {
           <div class="card-body">
             <h3 class="card-title">${this.escape(item.title)}</h3>
             <p class="card-desc">${this.escape(item.description || 'Fresh surplus food available for pickup.')}</p>
+            <div style="margin-bottom: 0.6rem;">${allergenBadge}</div>
             <div class="card-meta-list">
               <div class="meta-row">
                 <span class="meta-icon">📦</span>
@@ -316,11 +420,11 @@ const app = {
               </div>
               <div class="meta-row">
                 <span class="meta-icon">📍</span>
-                <span>Address: <span>${this.escape(item.pickupAddress)}</span></span>
+                <span>Place / Address: <span>${this.escape(item.pickupAddress)}</span></span>
               </div>
               <div class="meta-row">
-                <span class="meta-icon">⏳</span>
-                <span>Expires: <span>${expiryFormatted}</span></span>
+                <span class="meta-icon">📅</span>
+                <span>Expiry Date: <span>${expiryFormatted}</span></span>
               </div>
             </div>
             <div class="card-footer">
@@ -437,7 +541,7 @@ const app = {
 
       tbody.innerHTML = this.state.myDonations
         .map((d) => {
-          const exp = d.expiry ? new Date(d.expiry).toLocaleString() : 'N/A';
+          const exp = d.expiry ? this.formatDateOnly(d.expiry) : 'N/A';
           return `
           <tr>
             <td><strong>${this.escape(d.title)}</strong></td>
@@ -478,14 +582,23 @@ const app = {
     const category = document.getElementById('d-category').value;
     const quantity = Number(document.getElementById('d-quantity').value);
     const unit = document.getElementById('d-unit').value;
-    const expiry = document.getElementById('d-expiry').value;
+    const expiryVal = document.getElementById('d-expiry').value;
     const estimatedValue = Number(document.getElementById('d-val').value);
     const pickupAddress = document.getElementById('d-address').value;
+    const allergens = document.getElementById('d-allergens') ? document.getElementById('d-allergens').value : 'None';
     const lngEl = document.getElementById('d-lng');
     const latEl = document.getElementById('d-lat');
     const lng = lngEl ? Number(lngEl.value) : 77.5946;
     const lat = latEl ? Number(latEl.value) : 12.9716;
     const imageFileInput = document.getElementById('d-image-file');
+
+    // Parse date-only YYYY-MM-DD to end of day ISO string
+    let expiryIso;
+    if (expiryVal.includes('T')) {
+      expiryIso = new Date(expiryVal).toISOString();
+    } else {
+      expiryIso = new Date(`${expiryVal}T23:59:59`).toISOString();
+    }
 
     const formData = new FormData();
     formData.append('title', title);
@@ -493,9 +606,10 @@ const app = {
     formData.append('category', category);
     formData.append('quantity', quantity);
     formData.append('unit', unit);
-    formData.append('expiry', new Date(expiry).toISOString());
+    formData.append('expiry', expiryIso);
     formData.append('estimatedValue', estimatedValue);
     formData.append('pickupAddress', pickupAddress);
+    formData.append('allergens', allergens || 'None');
     formData.append('location', JSON.stringify({ type: 'Point', coordinates: [lng, lat] }));
 
     if (imageFileInput.files && imageFileInput.files[0]) {
@@ -648,7 +762,7 @@ const app = {
         if (resGrid) {
           resGrid.innerHTML = this.state.myReservations.map((r) => {
             const imgSrc = r.imageUrl || defaultImgs[r.category] || defaultImgs.other;
-            const exp = r.expiry ? new Date(r.expiry).toLocaleString() : 'N/A';
+            const exp = r.expiry ? this.formatDateOnly(r.expiry) : 'N/A';
             return `
               <div class="res-card">
                 <div class="card-img-wrap" style="height: 160px;">
@@ -1061,8 +1175,12 @@ const app = {
       const container = document.getElementById('detail-content');
       document.getElementById('detail-title').textContent = item.title;
 
-      const exp = item.expiry ? new Date(item.expiry).toLocaleString() : 'N/A';
+      const exp = item.expiry ? this.formatDateOnly(item.expiry) : 'N/A';
       const defaultImg = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80';
+      const hasAllergens = item.allergens && item.allergens.toLowerCase() !== 'none';
+      const allergenNotice = hasAllergens
+        ? `<div style="background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600; margin-bottom: 1.25rem;">⚠️ <strong>Allergen Warning:</strong> Contains ${this.escape(item.allergens)}</div>`
+        : `<div style="background: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600; margin-bottom: 1.25rem;">🌿 <strong>Allergen Notice:</strong> Listed as Allergen-Free</div>`;
 
       container.innerHTML = `
         <div style="margin-bottom: 1rem;">
@@ -1072,11 +1190,12 @@ const app = {
           <span class="badge badge-cat">${item.category}</span>
           <span class="badge badge-status status-${item.status}">${item.status}</span>
         </div>
-        <p class="modal-detail-desc" style="margin-bottom: 1.25rem;">${this.escape(item.description || 'Fresh surplus food available.')}</p>
+        <p class="modal-detail-desc" style="margin-bottom: 1rem;">${this.escape(item.description || 'Fresh surplus food available.')}</p>
+        ${allergenNotice}
         <div class="card-meta-list" style="margin-bottom: 1.5rem;">
           <div class="meta-row"><span>📦 Quantity:</span> <strong>${item.quantity} ${this.escape(item.unit)}</strong></div>
-          <div class="meta-row"><span>📍 Pickup Address:</span> <strong>${this.escape(item.pickupAddress)}</strong></div>
-          <div class="meta-row"><span>⏳ Best Before:</span> <strong>${exp}</strong></div>
+          <div class="meta-row"><span>📍 Place / Address:</span> <strong>${this.escape(item.pickupAddress)}</strong></div>
+          <div class="meta-row"><span>📅 Expiry Date:</span> <strong>${exp}</strong></div>
           <div class="meta-row"><span>💵 Est. Value:</span> <strong>$${item.estimatedValue || 0}</strong></div>
         </div>
       `;

@@ -85,6 +85,7 @@ const createDonation = async (req, res) => {
     pickupAddress,
     location,
     estimatedValue,
+    allergens,
   } = body;
 
   const doc = {
@@ -96,6 +97,7 @@ const createDonation = async (req, res) => {
     unit,
     expiry: new Date(expiry), // Zod coerce produces a Date; defensive re-wrap
     pickupAddress,
+    allergens: allergens || 'None',
     location: {
       type: 'Point',
       coordinates: [location.coordinates[0], location.coordinates[1]],
@@ -162,7 +164,7 @@ const updateDonation = async (req, res) => {
   if (donation.status !== 'active') {
     return res.status(409).json({ error: { message: 'Only active donations can be edited', code: 'invalid_status' } });
   }
-  const fields = ['title', 'description', 'category', 'quantity', 'unit', 'expiry', 'pickupAddress', 'estimatedValue'];
+  const fields = ['title', 'description', 'category', 'quantity', 'unit', 'expiry', 'pickupAddress', 'estimatedValue', 'allergens'];
   for (const field of fields) if (req.body[field] !== undefined) donation[field] = req.body[field];
   if (req.body.location) donation.location = { type: 'Point', coordinates: req.body.location.coordinates };
   await donation.save();

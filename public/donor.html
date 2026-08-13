@@ -154,8 +154,8 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Best Before / Expiry Time</label>
-            <input type="datetime-local" class="form-control" id="d-expiry" required>
+            <label class="form-label">Expiry Date</label>
+            <input type="date" class="form-control" id="d-expiry" required>
           </div>
           <div class="form-group">
             <label class="form-label">Estimated Value ($)</label>
@@ -164,8 +164,13 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Pickup Address</label>
+          <label class="form-label">Pickup Address / Establishment Location</label>
           <input type="text" class="form-control" id="d-address" required placeholder="e.g. 77 Baker Street, Downtown">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Allergic Ingredients / Allergen Warnings</label>
+          <input type="text" class="form-control" id="d-allergens" placeholder="e.g. Contains Dairy, Nuts, Gluten (or None)">
         </div>
 
         <div class="form-group">
