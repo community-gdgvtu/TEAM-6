@@ -25,39 +25,67 @@ const app = {
 
   getItemImageUrl(item) {
     if (item && item.imageUrl && typeof item.imageUrl === 'string' && item.imageUrl.trim().length > 5) {
-      return item.imageUrl.trim();
+      const url = item.imageUrl.trim();
+      if (url.startsWith('http') || url.startsWith('/uploads/')) return url;
     }
 
     const title = (item && item.title ? item.title.toLowerCase() : '');
     const cat = (item && item.category ? item.category.toLowerCase() : '');
 
-    // Local Generated & Vector Image Matches
-    if (title.includes('biryani') || title.includes('pulao') || title.includes('rice') || title.includes('paneer') || title.includes('curry') || title.includes('masala')) {
-      return '/images/paneer_biryani.png';
+    // Dish & Ingredient Keyword Image Resolver
+    if (title.includes('biryani') || title.includes('pulao') || title.includes('rice') || title.includes('thali')) {
+      return 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80';
     }
-    if (title.includes('sourdough') || title.includes('bread') || title.includes('croissant') || title.includes('bakery') || title.includes('pastry') || title.includes('danish') || title.includes('cake') || title.includes('muffin')) {
-      return '/images/bakery_croissants.png';
+    if (title.includes('paneer') || title.includes('palak') || title.includes('dal') || title.includes('makhani') || title.includes('curry') || title.includes('masala') || title.includes('gravy')) {
+      return 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=600&q=80';
     }
-    if (title.includes('fruit') || title.includes('apple') || title.includes('orange') || title.includes('produce') || title.includes('berry') || title.includes('vegetable') || title.includes('salad')) {
-      return '/images/produce.svg';
+    if (title.includes('chicken') || title.includes('puff') || title.includes('meat') || title.includes('kebab') || title.includes('roast')) {
+      return 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=80';
     }
-    if (title.includes('milk') || title.includes('cheese') || title.includes('butter') || title.includes('dairy')) {
-      return '/images/dairy.svg';
+    if (title.includes('soup') || title.includes('broth') || title.includes('stew')) {
+      return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80';
     }
-    if (title.includes('juice') || title.includes('drink') || title.includes('beverage') || title.includes('coffee') || title.includes('tea')) {
-      return '/images/beverages.svg';
+    if (title.includes('pizza')) {
+      return 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('burger')) {
+      return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('sandwich') || title.includes('wrap') || title.includes('roll') || title.includes('taco')) {
+      return 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('croissant') || title.includes('pastry') || title.includes('sourdough') || title.includes('bread') || title.includes('bakery') || title.includes('toast') || title.includes('bun')) {
+      return 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('cake') || title.includes('dessert') || title.includes('muffin') || title.includes('sweet') || title.includes('donut') || title.includes('cookie') || title.includes('brownie')) {
+      return 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('fruit') || title.includes('apple') || title.includes('orange') || title.includes('berry') || title.includes('produce') || title.includes('banana') || title.includes('mango')) {
+      return 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('vegetable') || title.includes('salad') || title.includes('green') || title.includes('veggie')) {
+      return 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('milk') || title.includes('cheese') || title.includes('butter') || title.includes('dairy') || title.includes('yogurt')) {
+      return 'https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('juice') || title.includes('drink') || title.includes('beverage') || title.includes('coffee') || title.includes('tea') || title.includes('shake') || title.includes('smoothie')) {
+      return 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('pasta') || title.includes('noodle') || title.includes('spaghetti') || title.includes('macaroni') || title.includes('lasagna')) {
+      return 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80';
     }
 
-    // Category Fallbacks
+    // High-Res Category Fallbacks
     const categoryDefaults = {
-      'prepared-meals': '/images/paneer_biryani.png',
-      bakery: '/images/bakery_croissants.png',
-      produce: '/images/produce.svg',
-      dairy: '/images/dairy.svg',
-      beverages: '/images/beverages.svg',
-      packaged: '/images/produce.svg',
-      frozen: '/images/dairy.svg',
-      other: '/images/paneer_biryani.png',
+      'prepared-meals': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+      bakery: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+      produce: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80',
+      dairy: 'https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?auto=format&fit=crop&w=600&q=80',
+      beverages: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
+      packaged: 'https://images.unsplash.com/photo-1584473457406-6df42d825c81?auto=format&fit=crop&w=600&q=80',
+      frozen: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
+      other: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80',
     };
 
     return categoryDefaults[cat] || categoryDefaults.other;
@@ -382,7 +410,7 @@ const app = {
     });
 
     const places = Object.values(placeMap);
-    const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' style='background:%2310b981'><text x='50%' y='50%' font-size='40' fill='white' text-anchor='middle' dominant-baseline='central'>🏬 Partner Place</text></svg>";
+    const fallbackImg = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80';
 
     grid.innerHTML = places
       .map((place) => {
@@ -404,7 +432,7 @@ const app = {
         return `
         <div class="food-card" style="border: 1px solid rgba(16, 185, 129, 0.4);">
           <div class="card-img-wrap">
-            <img src="${sampleImg}" alt="${this.escape(place.address)}" class="card-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
+            <img src="${sampleImg}" alt="" class="card-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
             <div class="card-badge-top">
               <span class="badge badge-cat">🏬 Partner Place</span>
               <span class="badge badge-status status-active">${totalItems} Listed Item${totalItems > 1 ? 's' : ''}</span>
@@ -457,7 +485,7 @@ const app = {
       return;
     }
 
-    const fallbackImg = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' style='background:%2310b981'><text x='50%' y='50%' font-size='40' fill='white' text-anchor='middle' dominant-baseline='central'>🍲 RescueBite Food</text></svg>";
+    const fallbackImg = 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80';
 
     grid.innerHTML = bannerHtml + items
       .map((item) => {
@@ -473,7 +501,7 @@ const app = {
         return `
         <div class="food-card" onclick="app.openDetailModal('${item._id}')">
           <div class="card-img-wrap">
-            <img src="${imgSrc}" alt="${item.title}" class="card-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
+            <img src="${imgSrc}" alt="" class="card-img" onerror="this.onerror=null; this.src='${fallbackImg}';">
             <div class="card-badge-top">
               <span class="badge badge-cat">${item.category}</span>
               <span class="badge badge-status status-${item.status}">${item.status}</span>
