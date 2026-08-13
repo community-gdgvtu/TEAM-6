@@ -22,6 +22,73 @@ const app = {
     return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   },
 
+  getItemImageUrl(item) {
+    if (item && item.imageUrl && typeof item.imageUrl === 'string' && item.imageUrl.trim().length > 5) {
+      return item.imageUrl.trim();
+    }
+
+    const title = (item && item.title ? item.title.toLowerCase() : '');
+    const cat = (item && item.category ? item.category.toLowerCase() : '');
+
+    // Title Keyword Matches to distinct high-res food images
+    if (title.includes('biryani') || title.includes('pulao') || title.includes('rice')) {
+      return 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('paneer') || title.includes('curry') || title.includes('masala')) {
+      return 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('pizza')) {
+      return 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('burger')) {
+      return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('sandwich') || title.includes('wrap')) {
+      return 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('sourdough') || title.includes('bread') || title.includes('toast')) {
+      return 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('croissant') || title.includes('pastry') || title.includes('danish')) {
+      return 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('cake') || title.includes('muffin') || title.includes('dessert') || title.includes('sweet') || title.includes('chocolate')) {
+      return 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('fruit') || title.includes('apple') || title.includes('orange') || title.includes('berry') || title.includes('basket')) {
+      return 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('vegetable') || title.includes('salad') || title.includes('green')) {
+      return 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('milk') || title.includes('cheese') || title.includes('butter') || title.includes('dairy')) {
+      return 'https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('juice') || title.includes('drink') || title.includes('beverage') || title.includes('coffee') || title.includes('tea')) {
+      return 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('pasta') || title.includes('spaghetti') || title.includes('noodle')) {
+      return 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80';
+    }
+    if (title.includes('soup')) {
+      return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80';
+    }
+
+    // Category Fallbacks
+    const categoryDefaults = {
+      'prepared-meals': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+      bakery: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+      produce: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80',
+      dairy: 'https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?auto=format&fit=crop&w=600&q=80',
+      packaged: 'https://images.unsplash.com/photo-1584473457406-6df42d825c81?auto=format&fit=crop&w=600&q=80',
+      beverages: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
+      frozen: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
+      other: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80',
+    };
+
+    return categoryDefaults[cat] || categoryDefaults.other;
+  },
+
   // Initialization
   async init() {
     console.log('🌱 RescueBite App initializing...');
@@ -380,18 +447,7 @@ const app = {
 
     grid.innerHTML = items
       .map((item) => {
-        const defaultImgs = {
-          'prepared-meals': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
-          bakery: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
-          produce: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80',
-          dairy: 'https://images.unsplash.com/photo-1528750997573-59b89d56f4f7?auto=format&fit=crop&w=600&q=80',
-          packaged: 'https://images.unsplash.com/photo-1584473457406-6df42d825c81?auto=format&fit=crop&w=600&q=80',
-          beverages: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
-          frozen: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80',
-          other: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80',
-        };
-
-        const imgSrc = item.imageUrl || defaultImgs[item.category] || defaultImgs.other;
+        const imgSrc = this.getItemImageUrl(item);
         const expiryFormatted = item.expiry ? this.formatDateOnly(item.expiry) : 'N/A';
         const isNgo = this.state.user && this.state.user.role === 'ngo';
 
@@ -1176,7 +1232,7 @@ const app = {
       document.getElementById('detail-title').textContent = item.title;
 
       const exp = item.expiry ? this.formatDateOnly(item.expiry) : 'N/A';
-      const defaultImg = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80';
+      const imgSrc = this.getItemImageUrl(item);
       const hasAllergens = item.allergens && item.allergens.toLowerCase() !== 'none';
       const allergenNotice = hasAllergens
         ? `<div style="background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600; margin-bottom: 1.25rem;">⚠️ <strong>Allergen Warning:</strong> Contains ${this.escape(item.allergens)}</div>`
@@ -1184,7 +1240,7 @@ const app = {
 
       container.innerHTML = `
         <div style="margin-bottom: 1rem;">
-          <img src="${item.imageUrl || defaultImg}" style="width: 100%; height: 220px; object-fit: cover; border-radius: var(--radius-md);" onerror="this.src='${defaultImg}'">
+          <img src="${imgSrc}" style="width: 100%; height: 220px; object-fit: cover; border-radius: var(--radius-md);" onerror="this.src='https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80'">
         </div>
         <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
           <span class="badge badge-cat">${item.category}</span>

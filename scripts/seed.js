@@ -69,6 +69,8 @@ const upsertUser = async ({ name, email, role }) => {
           unit: 'meals', expiry: new Date(Date.now() + 24 * 60 * 60 * 1000),
           pickupAddress: '12 Market Street, Bengaluru', location: { type: 'Point', coordinates: [77.5946, 12.9716] },
           estimatedValue: 2500, status: 'completed', reservedByNgoId: ngo._id,
+          imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+          allergens: 'None',
         },
       },
       { new: true, upsert: true, setDefaultsOnInsert: true },
@@ -88,10 +90,57 @@ const upsertUser = async ({ name, email, role }) => {
       { title: 'DEMO ACTIVE: Bakery Surplus for Pickup', donorId: donor._id },
       {
         $set: {
-          description: 'Reserve this active donation during the live demo.', category: 'bakery', quantity: 18,
-          unit: 'items', expiry: new Date(Date.now() + 12 * 60 * 60 * 1000),
+          description: 'Reserve this active bakery surplus donation during live demonstration.', category: 'bakery', quantity: 18,
+          unit: 'items', expiry: new Date(Date.now() + 24 * 60 * 60 * 1000),
           pickupAddress: '12 Market Street, Bengaluru', location: { type: 'Point', coordinates: [77.5946, 12.9716] },
           estimatedValue: 900, status: 'active', reservedByNgoId: null,
+          imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+          allergens: 'Contains Gluten, Wheat, Butter',
+        },
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true },
+    );
+
+    await Donation.findOneAndUpdate(
+      { title: 'Paneer Biryani & Curry Feast', donorId: donor._id },
+      {
+        $set: {
+          description: 'Authentic aromatic Paneer Dum Biryani prepared fresh today.', category: 'prepared-meals', quantity: 15,
+          unit: 'portions', expiry: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          pickupAddress: '12 Market Street, Bengaluru', location: { type: 'Point', coordinates: [77.5946, 12.9716] },
+          estimatedValue: 1200, status: 'active', reservedByNgoId: null,
+          imageUrl: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80',
+          allergens: 'Contains Dairy, Spices',
+        },
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true },
+    );
+
+    await Donation.findOneAndUpdate(
+      { title: 'Artisanal Sourdough & Croissant Basket', donorId: donor._id },
+      {
+        $set: {
+          description: 'Freshly baked sourdough loaves, butter croissants and pastries.', category: 'bakery', quantity: 20,
+          unit: 'items', expiry: new Date(Date.now() + 18 * 60 * 60 * 1000),
+          pickupAddress: '12 Market Street, Bengaluru', location: { type: 'Point', coordinates: [77.5946, 12.9716] },
+          estimatedValue: 800, status: 'active', reservedByNgoId: null,
+          imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+          allergens: 'Contains Gluten, Wheat, Butter',
+        },
+      },
+      { new: true, upsert: true, setDefaultsOnInsert: true },
+    );
+
+    await Donation.findOneAndUpdate(
+      { title: 'Garden Fresh Fruit & Produce Crate', donorId: donor._id },
+      {
+        $set: {
+          description: 'Organic apples, oranges, berries and fresh garden produce.', category: 'produce', quantity: 12,
+          unit: 'kg', expiry: new Date(Date.now() + 48 * 60 * 60 * 1000),
+          pickupAddress: '12 Market Street, Bengaluru', location: { type: 'Point', coordinates: [77.5946, 12.9716] },
+          estimatedValue: 650, status: 'active', reservedByNgoId: null,
+          imageUrl: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=600&q=80',
+          allergens: 'None',
         },
       },
       { new: true, upsert: true, setDefaultsOnInsert: true },
